@@ -1,0 +1,21 @@
+[Unit]
+Description=Run a radio on a raspberry pi Zero WH.
+After=network.target bluetooth.service pulseaudio.service
+Wants=network-online.target
+
+[Service]
+Environment="RADIO_PI_MAC_ADDRESS=C4:03:25:C5:C9:29"
+Environment="RADIO_PI_URL=http://streaming.radio.rtl.fr/rtl-1-44-128"
+Environment="RADIO_PI_VOLUME=25"
+Type=simple
+WorkingDirectory=/home/hugo-c/git_projects/radio-pi
+ExecStartPre=/bin/bash -c '(while ! nslookup rtl.fr 2>/dev/null; do echo "Waiting to be able to resolve urls"; sleep 10; done);'
+ExecStart=/bin/bash -x auto_start.sh
+User=hugo-c
+Group=hugo-c
+Restart=always
+RestartSec=5
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target
